@@ -7,11 +7,29 @@ body {
 	background-color: #FaFaFa;
 	text-align: center;
 	line-height: 1.4em;
+	height: 100vh;
+}
+
+.grid-container{
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-rows: 10% 1fr 1fr 10%;
 }
 
 .container {
 	padding: 0;
 	margin-top: 40px;
+	border: 3px solid black;
+}
+
+.data-hora{
+	grid-column: 1;
+	grid-row: 2;
+}
+
+.titulo-pagina{
+	grid-column: 1 / span 3;
+	grid-row: 1;
 }
 
 h3 {
@@ -23,6 +41,8 @@ hr {
 }
 
 .footer {
+	grid-column: 1 / span 2;
+	grid-row: 5;
 	margin-top: 40px;
 }
 
