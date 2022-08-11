@@ -28,7 +28,7 @@ app.get("/api/hello", function (req, res) {
   res.json({ greeting: 'hello APIi' });
 });
 
-//Data e Hora
+//Data e Hora - /time/api/:date_string
 
 app.get("/time/api", function (req, res) {
   let now = new Date()
@@ -60,6 +60,60 @@ app.get("/time/api/:date_string", function (req, res) {
     })
   }
 })
+//Data Hora FIM - /time/api/:date_string
+//------------------------------------------------
+
+//dados do usuário - /dados/api/whoami
+
+app.get("/dados/api/whoami", function(req,res) {
+  res.json({
+    "app" : "dados do usuário"
+  })
+})
+
+//END dados do usuário - /dados/api/whoami
+//------------------------------------------------
+
+//URL encurta - /url/api/shorturl
+
+app.post("/url/api/shorturl", function(req,res) {
+  res.json({
+    "app" : "url reducer"
+  })
+})
+
+//END URL encurta - /url/api/shorturl
+//------------------------------------------------
+
+
+//Rastreador de Exercícios - /tracker/api/users
+
+app.post("/tracker/api/users/", function(req,res) {
+  res.json({
+    rastreador: "exer"
+  })
+})
+
+app.post("/tracker/api/users/:userId/exercises", function(req,res) {
+  let passedValue = req.params
+  res.json({
+    passedValue
+  })
+})
+
+//END Rastreador de Exercícios - /tracker/api/users
+//------------------------------------------------
+
+//Upload de arquivo - /file/api/fileanalyse
+
+app.post("/file/api/fileanalyse", function(req,res) {
+  res.json({
+    "upload" : "FILE"
+  })
+})
+
+//Upload de arquivo - /file/api/fileanalyse
+//------------------------------------------------
 
 // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
