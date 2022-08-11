@@ -30,7 +30,7 @@ app.get("/api/hello", function (req, res) {
 
 //Data e Hora
 
-app.get("time/api", function (req, res) {
+app.get("/time/api", function (req, res) {
   let now = new Date()
   res.json({
     "unix": now.getTime(),
@@ -38,7 +38,7 @@ app.get("time/api", function (req, res) {
   })
 })
 
-app.get("time/api/:date_string", function (req, res) {
+app.get("/time/api/:date_string", function (req, res) {
   let dateString = req.params.date_string
   let stringPassed = new Date(dateString)
 
