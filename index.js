@@ -30,10 +30,32 @@ app.get("/api/hello", function (req, res) {
 });
 
 
+app.get("/api", function(req,res){
+  let now = new Date()
+  res.json({
+    "unix": now.getTime(),
+    "UTC": now.toUTCString()
+  })
+})
+
 app.get("/api/:date_string", function(req, res){
   let dateString = req.params.date_string
+  let stringPassed = new Date(dateString)
+
+  if(stringPassed == 'Invalid Date'){
+    res.json({ error : "Invalid Date" })
+  } else {
+    res.json({
+      "unix": stringPassed.getTime(),
+      "UTC": stringPassed.toUTCString()
+    })
+  }
+
+
   console.log(dateString)
-  res.json({ error : "Invalid Date" })
+
+
+
 })
 
 
