@@ -4,8 +4,8 @@
 // init project
 var express = require('express');
 var app = express();
-const PORT = 3000;
 
+const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`Running in http://localhost:${PORT}`);
 })
@@ -101,6 +101,12 @@ app.post("/tracker/api/users/:userId/exercises", function(req,res) {
   })
 })
 
+app.post("/tracker/api/users//exercises", function(req,res) {
+  res.json({
+    invalid: "construction"
+  })
+})
+
 //END Rastreador de Exercícios - /tracker/api/users
 //------------------------------------------------
 
@@ -115,7 +121,8 @@ app.post("/file/api/fileanalyse", function(req,res) {
 //Upload de arquivo - /file/api/fileanalyse
 //------------------------------------------------
 
-// listen for requests :)
+
+/* // listen for requests :)
 var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
-});
+}); */
