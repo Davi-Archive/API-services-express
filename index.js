@@ -105,7 +105,7 @@ app.post('/url/api/shorturl', jsonParser, function (req, res) {
   let newShortURL = suffix
 
   let newURL = new ShortURL({
-    short_url: __dirname + "/url/api/shorturl/" + suffix,
+    short_url: "/url/api/shorturl/" + suffix,
     original_url: client_requested_url,
     suffix: suffix
   })
