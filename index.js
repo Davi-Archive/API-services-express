@@ -105,7 +105,7 @@ app.post('/url/api/shorturl', jsonParser, function (req, res) {
   let newShortURL = suffix
 
   let newURL = new ShortURL({
-    short_url: __dirname + "/url/api/shorturl" + suffix,
+    short_url: __dirname + "/url/api/shorturl/" + suffix,
     original_url: client_requested_url,
     suffix: suffix
   })
@@ -122,10 +122,12 @@ app.post('/url/api/shorturl', jsonParser, function (req, res) {
 })
 
 app.get('/url/api/shorturl/:suffix', function(req, res){
-  console.log()
-  res.json({
-    "suffix": req.body.suffix
-  })
+  let userGeneratedSuffix = req.params.suffix;
+  ShortURL.find({suffix: userGeneratedSuffix}).then(foundUrls => {
+     let urlForRedirect = foundUrls[0];
+     console.log(urlForRedirect.original_url)
+     res.redirect(urlForRedirect.original_url)
+    })
 })
 
 
