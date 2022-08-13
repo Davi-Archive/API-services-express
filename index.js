@@ -113,10 +113,14 @@ app.post('/url/api/shorturl', jsonParser, function (req, res) {
     let suffix = shortid.generate()
     urlArray.unshift(client_requested_url)
     res.json({
-      "short_url": suffix,
+      "short_url": "/api/shorturl/"+suffix,
       "original_url": client_requested_url,
     })
   }})
+
+app.get('/api/shorturl/:suffix', function(req, res){
+  res.redirect(urlArray[0])
+})
 
 app.get('/url/api/shorturl/:suffix', function(req, res){
       res.redirect(urlArray[0])
