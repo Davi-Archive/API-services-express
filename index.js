@@ -103,13 +103,20 @@ const urlArray = []
 
 app.post('/url/api/shorturl', jsonParser, function (req, res) {
   let client_requested_url = req.body.url
-  let suffix = shortid.generate()
-  urlArray.unshift(client_requested_url)
-      res.json({
-        "short_url": suffix,
-        "original_url": client_requested_url,
-      })
+  var regex = /http?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+
+  if(!regex.test(client_requested_url)){
+    res.json({
+      error: 'invalid url'
     })
+  }else{
+    let suffix = shortid.generate()
+    urlArray.unshift(client_requested_url)
+    res.json({
+      "short_url": suffix,
+      "original_url": client_requested_url,
+    })
+  }})
 
 app.get('/url/api/shorturl/:suffix', function(req, res){
       res.redirect(urlArray[0])
