@@ -99,35 +99,20 @@ app.use(bodyParser.json()); //link em json
 // create application/x-www-form-urlencoded parser
 app.use(bodyParser.urlencoded({ extended: false }));
 
+const urlArray = []
+
 app.post('/url/api/shorturl', jsonParser, function (req, res) {
   let client_requested_url = req.body.url
   let suffix = shortid.generate()
-  let newShortURL = suffix
-
-  let newURL = new ShortURL({
-    short_url: "/url/api/shorturl/" + suffix,
-    original_url: client_requested_url,
-    suffix: suffix
-  })
-  newURL.save(function (err, result) {
-    if (err) throw err;
-    if (result) {
+  urlArray.unshift(client_requested_url)
       res.json({
-        "short_url": newURL.short_url,
-        "original_url": newURL.original_url,
-        "suffix": newURL.suffix
+        "short_url": suffix,
+        "original_url": client_requested_url,
       })
-    }
-  })
-})
+    })
 
 app.get('/url/api/shorturl/:suffix', function(req, res){
-  let userGeneratedSuffix = req.params.suffix;
-  ShortURL.find({suffix: userGeneratedSuffix}).then(foundUrls => {
-     let urlForRedirect = foundUrls[0];
-     console.log(urlForRedirect.original_url)
-     res.redirect(urlForRedirect.original_url)
-    })
+      res.redirect(urlArray[0])
 })
 
 
