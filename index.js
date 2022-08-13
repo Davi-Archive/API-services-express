@@ -5,7 +5,7 @@
 var express = require('express');
 var app = express();
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Running in http://localhost:${PORT}`);
 })
@@ -67,7 +67,9 @@ app.get("/time/api/:date_string", function (req, res) {
 
 app.get("/dados/api/whoami", function(req,res) {
   res.json({
-    "app" : "dados do usuário"
+    "ipaddress" : req.ip || 'not found',
+    "language" : req.headers["accept-language"] || 'not found',
+    "software" : req.headers['user-agent'] || 'not found',
   })
 })
 
