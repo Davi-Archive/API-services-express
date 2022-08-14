@@ -6,11 +6,13 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var mongo = require('mongodb');
+const dns = require('dns');
+const urlparser = require('url');
 var mongoose = require('mongoose');
 require('dotenv').config()
 
 
-mongoose.connect(process.env.DB_URI);
+mongoose.connect(process.env.DB_URI,  { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 const PORT = process.env.PORT || 3000;
@@ -88,9 +90,7 @@ app.get("/dados/api/whoami", function (req, res) {
 //URL encurta - /url/api/shorturl
 //mongoose connect + SCHEMA
 const ShortURL = mongoose.model('ShortURL', new mongoose.Schema({
-  short_url: String,
   original_url: String,
-  suffix: String
 }));
 
 // parse application/json
@@ -99,25 +99,20 @@ app.use(bodyParser.json()); //link em json
 // create application/x-www-form-urlencoded parser
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const urlArray = []
 
-app.post('/url/api/shorturl', jsonParser, function (req, res) {
+app.post('/url/api/shorturl/new', function (req, res) {
   let client_requested_url = req.body.url
-  let suffix = shortid.generate()
-  let newShortURL = suffix
 
-  let newURL = new ShortURL({
-    short_url: __dirname + "/url/api/shorturl/" + suffix,
-    original_url: client_requested_url,
-    suffix: suffix
-  })
-  newURL.save(function (err, result) {
-    if (err) throw err;
-    if (result) {
-      res.json({
-        "short_url": newURL.short_url,
-        "original_url": newURL.original_url,
-        "suffix": newURL.suffix
+  const checkDns = dns.lookup(urlparser.parse(client_requested_url).hostname, (error, address) => {
+    if (!address){
+      res.json({'error': "Invalid URL"})
+    } else {
+      const url = new ShortURL({url: client_requested_url})
+      url.save((err,data) => {
+        res.json({
+          original_url: client_requested_url,
+          short_url: data.id
+        })
       })
     }
   })
