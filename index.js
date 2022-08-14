@@ -95,10 +95,15 @@ const ShortURL = mongoose.model('ShortURL', new mongoose.Schema({
   url: String,
 }));
 // ShortURL Schema END
+var jsonParser = bodyParser.json()
+app.use(bodyParser.json()); //link em json
+// create application/x-www-form-urlencoded parser
+app.use(bodyParser.urlencoded({ extended: false }));
 
-app.post('/url/api/shorturl/new', function (req, res) {
+
+app.post('/url/api/shorturl/new', jsonParser, function (req, res) {
   let client_requested_url = req.body.url
-  const checkDns = dns.lookup(urlparser.parse(client_requested_url).hostname, (error, address) => {
+  dns.lookup(urlparser.parse(client_requested_url).hostname, (error, address) => {
     if (!address){
       res.json({ error: 'invalid url' })
     } else {
