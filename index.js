@@ -35,7 +35,7 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 app.get("/url/", function (req, res) {
-  res.sendFile(__dirname + '/views/url/index.html');
+  res.sendFile(__dirname + '/views/url/urlapi.html');
 });
 
 // your first API endpoint...
