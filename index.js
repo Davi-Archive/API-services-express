@@ -34,6 +34,9 @@ app.use(express.static('public'));
 app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
+app.get("/url/", function (req, res) {
+  res.sendFile(__dirname + '/views/url/index.html');
+});
 
 // your first API endpoint...
 app.get("/api/hello", function (req, res) {
@@ -101,7 +104,7 @@ app.use(bodyParser.json()); //link em json
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-app.post('/url/api/shorturl/new', jsonParser, function (req, res) {
+app.post('/url/api/shorturl/', jsonParser, function (req, res) {
   let client_requested_url = req.body.url
   dns.lookup(urlparser.parse(client_requested_url).hostname, (error, address) => {
     if (!address){
