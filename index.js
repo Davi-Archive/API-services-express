@@ -24,6 +24,7 @@ app.listen(PORT, () => {
 // so that your API is remotely testable by FCC
 var cors = require('cors');
 const shortid = require('shortid');
+const { url } = require('inspector');
 app.use(cors({ optionsSuccessStatus: 200 }));  // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
@@ -88,29 +89,23 @@ app.get("/dados/api/whoami", function (req, res) {
 //------------------------------------------------
 
 //URL encurta - /url/api/shorturl
+
 //mongoose connect + SCHEMA
 const ShortURL = mongoose.model('ShortURL', new mongoose.Schema({
-  original_url: String,
+  url: String,
 }));
-
-// parse application/json
-var jsonParser = bodyParser.json()
-app.use(bodyParser.json()); //link em json
-// create application/x-www-form-urlencoded parser
-app.use(bodyParser.urlencoded({ extended: false }));
-
+// ShortURL Schema END
 
 app.post('/url/api/shorturl/new', function (req, res) {
   let client_requested_url = req.body.url
-
   const checkDns = dns.lookup(urlparser.parse(client_requested_url).hostname, (error, address) => {
     if (!address){
-      res.json({'error': "Invalid URL"})
+      res.json({ error: 'invalid url' })
     } else {
-      const url = new ShortURL({url: client_requested_url})
-      url.save((err,data) => {
+      const url = new ShortURL({ url: client_requested_url })
+      url.save((err, data) => {
         res.json({
-          original_url: client_requested_url,
+          original_url: data.url,
           short_url: data.id
         })
       })
@@ -118,8 +113,15 @@ app.post('/url/api/shorturl/new', function (req, res) {
   })
 })
 
-app.get('/url/api/shorturl/:suffix', function(req, res){
-      res.redirect(urlArray[0])
+app.get('/url/api/shorturl/:id', function(req, res){
+    const id = req.params.id;
+    ShortURL.findById(id, (err,data) =>{
+      if(!data){
+        res.json({ error: 'invalid url' })
+      } else {
+        res.redirect(data.url)
+      }
+    })
 })
 
 
