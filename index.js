@@ -242,9 +242,13 @@ app.get("/tracker/api/users/:id/logs", (req, res)=>{
   })
 })
 
-app.post("/tracker/api/users//exercises", function (req, res) {
-  res.json({
-    invalid: "construction"
+app.get("/tracker/api/users/", function (req, res) {
+  User.find({}, (err,data)=>{
+    if(err || !data){
+      res.send("No Users")
+    } else {
+      res.json(data)
+    }
   })
 })
 
