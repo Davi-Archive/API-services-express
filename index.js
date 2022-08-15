@@ -137,384 +137,196 @@ app.get('/url/api/shorturl/:id', function(req, res){
 
 
 //Rastreador de Exercícios - /tracker/api/users
-const {Schema} = mongoose;
+const { Schema } = mongoose;
+const userSchema = new Schema ({
+  "username": String,
+})
 
-//Schema
-const ExerciseSchema = new Schema({
-  username: String,
-  description: String,
-  duration: Number,
-  date: Date
-});
+const exerciseSchema = new Schema({
+ "username": String,
+ "date": Date,
+ "duration": Number,
+ "description": String,
+})
 
-const UserSchema = new Schema({
-  username: String
-});
+const logSchema = new Schema({
+ "username": String,
+ "count": Number,
+ "log": Array,
+})
 
-//model
-const User = mongoose.model("User", UserSchema);
-const Exercise = mongoose.model("Execise", ExerciseSchema);
+// Models
+const UserInfo = mongoose.model('userInfo', userSchema);
+const ExerciseInfo = mongoose.model('exerciseInfo', exerciseSchema);
+const LogInfo = mongoose.model('logInfo', logSchema);
 
-// PATH /api/users/ Requests
-// GET: Show the contents of the User model
-// POST: Store user into User model
-app.route('/tracker/api/users').get((req, res) => {
-  User.find({}, (error, data) => {
-    //console.log(data);
-    res.json(data);
-  });
-}).post((req, res) => {
-  // Get username input into form
-  const potentialUsername = req.body.username;
-  console.log("potential username:", potentialUsername);
 
-  // Check to see if the username has already been entered
-  User.findOne({username: potentialUsername}, (error, data) => {
-    if (error) {
-      res.send("Unknown userID");
-      return console.log(error);
-    }
 
-    if (!data) { // If username is not stored yet, create and save a User object
-      const newUser = new User({
-        username: potentialUsername
-      });
 
-      // Save the user
-      newUser.save((error, data) => {
-        if (error) return console.log(error);
-        // Remove the key-value pair associated with the key __v
-        const reducedData = {
-          "username": data.username,
-          "_id": data._id
-        };
-        res.json(reducedData);
-        console.log(reducedData);
-      });
-    } else { // If username is already stored, send a message to the user
-      res.send(`Username ${potentialUsername} already exists.`);
-      console.log(`Username ${potentialUsername} already exists.`);
-    }
-  });
-});
+// Middlware
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
+app.use(express.static('public'))
+// Api Endpoints
 
-// PATH /api/users/:_id/exercises
-// POST: Store new exercise in the Exercise model
+ // #1
+app.post('/tracker/api/users', (req, res) => {
+ UserInfo.find({ "username": req.body.username}, (err, userData) => {
+   if (err) {
+     console.log("Error with server=> ", err)
+   } else {
+     if (userData.length === 0) {
+       const test = new UserInfo({
+         "_id": req.body.id,
+         "username": req.body.username,
+       })
+
+       test.save((err, data) => {
+         if (err) {
+           console.log("Error saving data=> ", err)
+         } else {
+           res.json({
+             "_id": data.id,
+             "username": data.username,
+           })
+         }
+       })
+     } else {
+       res.send("Username already Exists")
+     }
+   }
+ })
+})
+
+ // #2
 app.post('/tracker/api/users/:_id/exercises', (req, res) => {
-  // Get data from form
-  const userID = req.body[":_id"] || req.params._id;
-  const descriptionEntered = req.body.description;
-  const durationEntered = req.body.duration;
-  const dateEntered = req.body.date;
+ let idJson = { "id": req.params._id};
+ let checkedDate = new Date(req.body.date);
+ let idToCheck = idJson.id;
 
-  // Print statement for debugging
-  console.log(userID, descriptionEntered, durationEntered, dateEntered);
+ let noDateHandler = () => {
+   if (checkedDate instanceof Date && !isNaN(checkedDate)) {
+     return checkedDate
+   } else {
+     checkedDate = new Date();
+   }
+ }
 
-  // Make sure the user has entered in an id, a description, and a duration
-  // Set the date entered to now if the date is not entered
-  if (!userID) {
-    res.json("Path `userID` is required.");
-    return;
-  }
-  if (!descriptionEntered) {
-    res.json("Path `description` is required.");
-    return;
-  }
-  if (!durationEntered) {
-    res.json("Path `duration` is required.");
-    return;
-  }
+ UserInfo.findById(idToCheck, (err, data) => {
+   noDateHandler(checkedDate);
 
-  // Check if user ID is in the User model
-  User.findOne({"_id": userID}, (error, data) => {
-    if (error) {
-      res.json("Invalid userID");
-      return console.log(error);
-    }
-    if (!data) {
-      res.json("Unknown userID");
-      return;
-    } else {
-      console.log(data);
-      const usernameMatch = data.username;
+   if (err) {
+     console.log("error with id=> ", err);
+   } else {
+     const test = new ExerciseInfo({
+       "username": data.username,
+       "description": req.body.description,
+       "duration": req.body.duration,
+       "date": checkedDate.toDateString(),
+     })
 
-      // Create an Exercise object
-      const newExercise = new Exercise({
-        username: usernameMatch,
-        description: descriptionEntered,
-        duration: durationEntered
-      });
+     test.save((err, data) => {
+       if (err) {
+         console.log("error saving=> ", err);
+       } else {
+         console.log("saved exercise successfully");
+         res.json({
+           "_id": idToCheck,
+           "username": data.username,
+           "description": data.description,
+           "duration": data.duration,
+           "date": data.date.toDateString(),
+         })
+       }
+     })
+   }
+ })
+})
 
-      // Set the date of the Exercise object if the date was entered
-      if (dateEntered) {
-        newExercise.date = dateEntered;
-      }
+ // #3
 
-      // Save the exercise
-      newExercise.save((error, data) => {
-        if (error) return console.log(error);
-
-        console.log(data);
-
-        // Create JSON object to be sent to the response
-        const exerciseObject = {
-          "_id": userID,
-          "username": data.username,
-          "date": data.date.toDateString(),
-          "duration": data.duration,
-          "description": data.description
-        };
-
-        // Send JSON object to the response
-        res.json(exerciseObject);
-
-      });
-    }
-  });
-});
-
-
-// PATH /api/users/:_id/logs?[from][&to][&limit]
 app.get('/tracker/api/users/:_id/logs', (req, res) => {
-  const id = req.body["_id"] || req.params._id;
-  var fromDate = req.query.from;
-  var toDate = req.query.to;
-  var limit = req.query.limit;
+ const { from, to, limit } = req.query;
+ let idJson = { "id": req.params._id };
+ let idToCheck = idJson.id;
 
-  console.log(id, fromDate, toDate, limit);
+ // Check ID
+ UserInfo.findById(idToCheck, (err, data) => {
+   var query = {
+     username: data.username
+   }
 
-  // Validate the query parameters
-  if (fromDate) {
-    fromDate = new Date(fromDate);
-    if (fromDate == "Invalid Date") {
-      res.json("Invalid Date Entered");
-      return;
-    }
-  }
+   if (from !== undefined && to === undefined) {
+     query.date = { $gte: new Date(from)}
+   } else if (to !== undefined && from === undefined) {
+     query.date = { $lte: new Date(to) }
+   } else if (from !== undefined && to !== undefined) {
+     query.date = { $gte: new Date(from), $lte: new Date(to)}
+   }
 
-  if (toDate) {
-    toDate = new Date(toDate);
-    if (toDate == "Invalid Date") {
-      res.json("Invalid Date Entered");
-      return;
-    }
-  }
+   let limitChecker = (limit) => {
+     let maxLimit = 100;
+     if (limit) {
+       return limit;
+     } else {
+       return maxLimit
+     }
+   }
 
-  if (limit) {
-    limit = new Number(limit);
-    if (isNaN(limit)) {
-      res.json("Invalid Limit Entered");
-      return;
-    }
-  }
+   if (err) {
+     console.log("error with ID=> ", err)
+   } else {
 
-  // Get the user's information
-  User.findOne({ "_id" : id }, (error, data) => {
-    if (error) {
-      res.json("Invalid UserID");
-      return console.log(error);
-    }
-    if (!data) {
-      res.json("Invalid UserID");
-    } else {
+     ExerciseInfo.find((query), null, {limit: limitChecker(+limit)}, (err, docs) => {
+       let loggedArray = [];
+       if (err) {
+         console.log("error with query=> ", err);
+       } else {
 
-      // Initialize the object to be returned
-      const usernameFound = data.username;
-      var objToReturn = { "_id" : id, "username" : usernameFound };
+         let documents = docs;
+         let loggedArray = documents.map((item) => {
+           return {
+             "description": item.description,
+             "duration": item.duration,
+             "date": item.date.toDateString()
+           }
+         })
 
-      // Initialize filters for the count() and find() methods
-      var findFilter = { "username" : usernameFound };
-      var dateFilter = {};
+         const test = new LogInfo({
+           "username": data.username,
+           "count": loggedArray.length,
+           "log": loggedArray,
+         })
 
-      // Add to and from keys to the object if available
-      // Add date limits to the date filter to be used in the find() method on the Exercise model
-      if (fromDate) {
-        objToReturn["from"] = fromDate.toDateString();
-        dateFilter["$gte"] = fromDate;
-        if (toDate) {
-          objToReturn["to"] = toDate.toDateString();
-          dateFilter["$lt"] = toDate;
-        } else {
-          dateFilter["$lt"] = Date.now();
-        }
-      }
-
-      if (toDate) {
-        objToReturn["to"] = toDate.toDateString();
-        dateFilter["$lt"] = toDate;
-        dateFilter["$gte"] = new Date("1960-01-01");
-      }
-
-      // Add dateFilter to findFilter if either date is provided
-      if (toDate || fromDate) {
-        findFilter.date = dateFilter;
-      }
-
-      // console.log(findFilter);
-      // console.log(dateFilter);
-
-      // Add the count entered or find the count between dates
-      Exercise.count(findFilter, (error, data) => {
-        if (error) {
-          res.json("Invalid Date Entered");
-          return console.log(error);
-        }
-        // Add the count key
-        var count = data;
-        if (limit && limit < count) {
-          count = limit;
-        }
-        objToReturn["count"] = count;
-
-
-        // Find the exercises and add a log key linked to an array of exercises
-        Exercise.find(findFilter, (error, data) => {
-          if (error) return console.log(error);
-
-          // console.log(data);
-
-          var logArray = [];
-          var objectSubset = {};
-          var count = 0;
-
-          // Iterate through data array for description, duration, and date keys
-          data.forEach(function(val) {
-            count += 1;
-            if (!limit || count <= limit) {
-              objectSubset = {};
-              objectSubset.description = val.description;
-              objectSubset.duration = val.duration;
-              objectSubset.date = val.date.toDateString();
-              console.log(objectSubset);
-              logArray.push(objectSubset);
-            }
-          });
-
-          // Add the log array of objects to the object to return
-          objToReturn["log"] = logArray;
-
-          // Return the completed JSON object
-          res.json(objToReturn);
-        });
-
-      });
-
-    }
-  });
-});
-
-// ----------------
-// ADDITIONAL PATHS (not required for the FreeCodeCamp project)
-
-// PATH /api/exercises/
-// Display all of the exercises in the Mongo DB model titled Exercise
-app.get('/tracker/api/exercises', (req, res) => {
-  Exercise.find({}, (error, data) => {
-    if (error) return console.log(error);
-    res.json(data);
-  })
-});
-
-
-/*
-
-
-app.post("/tracker/api/users/", function (req, res) {
-  const newUser = new User({
-    username: req.body.username
-  })
-  newUser.save(function (err, data){
-    if(err || !data) throw err;
-    else{
-      res.json(data)
-    }
-  })
+         test.save((err, data) => {
+           if (err) {
+             console.log("error saving exercise=> ", err)
+           } else {
+             console.log("saved exercise successfully");
+             res.json({
+               "_id": idToCheck,
+               "username": data.username,
+               "count": data.count,
+               "log": loggedArray
+             })
+           }
+         })
+       }
+     })
+   }
+ })
 })
 
-app.post("/tracker/api/users/:id/exercises", function (req, res) {
-  const id = req.params.id
-  User.findById(id, (err, userData) => {
-    const id = req.params.id;
-    const {description, duration, date} = req.body;
-    User.findById(id, (err, userData)=>{
-      if(err || !userData){
-        res.send("Could not find the user.")
-      } else {
-        const newExercise = new Exercise({
-          userId: id,
-          description,
-          duration,
-          date: new Date(date)
-        })
-        newExercise.save((err,data)=>{
-          if(err){
-            res.send("Could not save the exercise")
-          } else {
-            const {description, duration, date, _id} = data;
-            res.json({
-              username: userData.username,
-              description,
-              duration,
-              date: date.toDateString(),
-              _id: userData.id
-            })
-          }
-        })
-      }
-    })
-  })
+ // #4
+app.get('/tracker/api/users', (req, res) => {
+ UserInfo.find({}, (err, data) => {
+   if (err) {
+     res.send("No Users");
+   } else {
+     res.json(data);
+   }
+ })
 })
-
-app.get("/tracker/api/users/:id/logs", (req, res)=>{
-  const {from, to, limit} = req.query;
-  const {id} = req.params;
-  User.findById(id, (err, userData)=>{
-    if (err || !userData){
-      res.send("Could not find user")
-    }else{
-      let dateObj ={}
-      if(from){
-        dateObj["$gte"] = new Date(from)
-      }
-      if(to){
-        dateObj["$lte"] = new Date(to)
-            }
-            let filter = {
-              userId: id,
-              dateObj
-            }
-      if( from || to ){
-        filter.date = dateObj
-      }
-      let noNullLimit = limit ?? 500
-      Exercise.find(filter).limit(+noNullLimit).exec((err,data)=>{
-        if(err || !data){
-          res.json([])
-        }else{
-          const count = data.length
-          const rawLog = data
-          const {username, _id} = userData
-          const log = rawLog.map((l)=> ({
-            description: l.description,
-            duration: l.duration,
-            date: l.date.toDateString()
-          }))
-          res.json(username, count, _id, log)
-        }
-      })
-    }
-  })
-})
-
-app.get("/tracker/api/users/", function (req, res) {
-  User.find({}, (err,data)=>{
-    if(err || !data){
-      res.send("No Users")
-    } else {
-      res.json(data)
-    }
-  })
-}) */
 
 //END Rastreador de Exercícios - /tracker/api/users
 //------------------------------------------------
