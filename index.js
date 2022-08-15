@@ -5,13 +5,13 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-var mongo = require('mongodb');
 const dns = require('dns');
 const urlparser = require('url');
 var mongoose = require('mongoose');
 require('dotenv').config()
+app.use(bodyParser.json()); //link em json
 
-
+// mongo connect
 mongoose.connect(process.env.DB_URI,  { useNewUrlParser: true, useUnifiedTopology: true });
 
 
@@ -23,8 +23,7 @@ app.listen(PORT, () => {
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC
 var cors = require('cors');
-const shortid = require('shortid');
-const { url } = require('inspector');
+const { application } = require('express');
 app.use(cors({ optionsSuccessStatus: 200 }));  // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
@@ -99,7 +98,6 @@ const ShortURL = mongoose.model('ShortURL', new mongoose.Schema({
 }));
 // ShortURL Schema END
 var jsonParser = bodyParser.json()
-app.use(bodyParser.json()); //link em json
 // create application/x-www-form-urlencoded parser
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -139,17 +137,68 @@ app.get('/url/api/shorturl/:id', function(req, res){
 
 
 //Rastreador de Exercícios - /tracker/api/users
+const {Schema} = mongoose;
+
+//Schema
+const ExerciseSchema = new Schema({
+  userId: {type: String, required: true},
+  description: String,
+  duration: Number,
+  date: Date
+});
+
+const UserSchema = new Schema({
+  username: String
+});
+
+//model
+const User = mongoose.model("User", UserSchema);
+const Exercise = mongoose.model("Execise", ExerciseSchema);
 
 app.post("/tracker/api/users/", function (req, res) {
-  res.json({
-    rastreador: "exer"
+  const newUser = new User({
+    username: req.body.username
+  })
+  newUser.save(function (err, data){
+    if(err || !data) throw err;
+    else{
+      res.json(data)
+    }
   })
 })
 
-app.post("/tracker/api/users/:userId/exercises", function (req, res) {
-  let passedValue = req.params
-  res.json({
-    passedValue
+app.post("/tracker/api/users/:id/exercises", function (req, res) {
+  const id = req.params.id
+  const {description, duration, date} = req.body
+  User.findById(id, (err, userData) => {
+    const id = req.params.id;
+    const {description, duration, date} = req.body;
+    User.findById(id, (err, userData)=>{
+      if(err || !userData){
+        res.send("Could not find the user.")
+      } else {
+        const newExercise = new Exercise({
+          userId: id,
+          description,
+          duration,
+          date: new Date(date)
+        })
+        newExercise.save((err,data)=>{
+          if(err){
+            res.send("Could not save the exercise")
+          } else {
+            const {description, duration, date, _id} = data;
+            res.json({
+              username: userData.username,
+              description,
+              duration,
+              date: date.toDateString(),
+              _id: userData.id
+            })
+          }
+        })
+      }
+    })
   })
 })
 
