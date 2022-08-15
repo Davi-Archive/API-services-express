@@ -243,7 +243,7 @@ app.post('/tracker/api/users/:_id/exercises', (req, res) => {
  })
 })
 
- // #3
+ // change data for test
 
 app.get('/tracker/api/users/:_id/logs', (req, res) => {
  const { from, to, limit } = req.query;
