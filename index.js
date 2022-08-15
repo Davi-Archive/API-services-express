@@ -10,6 +10,7 @@ const urlparser = require('url');
 var mongoose = require('mongoose');
 require('dotenv').config()
 app.use(bodyParser.json()); //link em json
+app.use(express.static('public'));
 
 // mongo connect
 mongoose.connect(process.env.DB_URI,  { useNewUrlParser: true, useUnifiedTopology: true });
@@ -23,7 +24,6 @@ app.listen(PORT, () => {
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC
 var cors = require('cors');
-const { application } = require('express');
 app.use(cors({ optionsSuccessStatus: 200 }));  // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
@@ -141,7 +141,7 @@ const {Schema} = mongoose;
 
 //Schema
 const ExerciseSchema = new Schema({
-  userId: {type: String, required: true},
+  username: String,
   description: String,
   duration: Number,
   date: Date
