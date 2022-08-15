@@ -169,7 +169,6 @@ app.post("/tracker/api/users/", function (req, res) {
 
 app.post("/tracker/api/users/:id/exercises", function (req, res) {
   const id = req.params.id
-  const {description, duration, date} = req.body
   User.findById(id, (err, userData) => {
     const id = req.params.id;
     const {description, duration, date} = req.body;
@@ -199,6 +198,47 @@ app.post("/tracker/api/users/:id/exercises", function (req, res) {
         })
       }
     })
+  })
+})
+
+app.get("/tracker/api/users/:id/logs", (req, res)=>{
+  const {from, to, limit} = req.query;
+  const {id} = req.params;
+  User.findById(id, (err, userData)=>{
+    if (err || !userData){
+      res.send("Could not find user")
+    }else{
+      let dateObj ={}
+      if(from){
+        dateObj["$gte"] = new Date(from)
+      }
+      if(to){
+        dateObj["$lte"] = new Date(to)
+            }
+            let filter = {
+              userId: id,
+              dateObj
+            }
+      if( from || to ){
+        filter.date = dateObj
+      }
+      let noNullLimit = limit ?? 500
+      Exercise.find(filter).limit(+noNullLimit).exec((err,data)=>{
+        if(err || !data){
+          res.json([])
+        }else{
+          const count = data.length
+          const rawLog = data
+          const {username, _id} = userData
+          const log = rawLog.map((l)=> ({
+            description: l.description,
+            duration: l.duration,
+            date: l.date.toDateString()
+          }))
+          res.json(username, count, _id, log)
+        }
+      })
+    }
   })
 })
 
