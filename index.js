@@ -337,13 +337,12 @@ app.get('/tracker/api/users', (req, res) => {
 //multer({dest: './public/uploads/'}) saves to folder /public/uploads/
 
 app.post("/file/api/fileanalyse", multer().single('upfile'), (req, res)=> {
-  let responseObject = {}
-    responseObject['name'] = req.file.originalname;
-    responseObject['type'] = req.file.mimetype;
-    responseObject['size'] = req.file.size;
-
   console.log(req.file)
-  res.json({responseObject})
+  res.json({
+    name: req.file.originalname,
+    type: req.file.mimetype,
+    size: req.file.size
+  })
 })
 
 //Upload de arquivo - /file/api/fileanalyse
