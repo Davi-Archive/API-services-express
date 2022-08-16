@@ -1,28 +1,77 @@
 <!DOCTYPE html>
 
 <html>
-  <head>
-    <title>Encurtamento de URL</title>
-    <link rel="icon" type="image/x-icon" href="robot.ico" />
-    <link href="form.css" rel="stylesheet" type="text/css" />
-  </head>
 
-  <body>
-    <h1>Encurtamento de URL's:</h1>
-    <main>
-      <section>
-        <form action="/url/api/shorturl" method="POST">
-          <fieldset>
-            <legend>Encurtador de URL</legend>
-            <label for="url_input">digite a URL:</label>
-            <input id="url_input" type="text" name="url" placeholder="https://github.com/davi38/" />
-            <input type="submit" value="Encurtar URL" />
-          </fieldset>
-        </form>
-      </section>
-    </main>
-    <footer>
-      <p>Meu <a href="https://www.linkedin.com/in/davialvesoliveira/">Linkedin</a></p>
-    </footer>
-  </body>
+<head>
+  <title>Encurtamento de URL</title>
+  <link rel="icon" type="image/x-icon" href="robot.ico" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      color: #222;
+      background-color: #f8e2a7;
+      text-align: center;
+      line-height: 1.4em;
+    }
+
+    main {
+      padding: 0;
+      margin-top: 40px;
+    }
+
+    h3 {
+      margin-top: 30px;
+    }
+
+
+
+    .user-stories li {
+      margin-bottom: 1em;
+    }
+
+    a {
+      color: #2574a9;
+    }
+
+    form {
+      margin: 10px auto;
+      padding: 20px;
+      max-width: 600px;
+    }
+
+    label {
+      margin-right: 10px;
+    }
+
+    input {
+      padding: 5px;
+    }
+
+    input[type='text'] {
+      width: 220px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Encurtamento de URL's:</h1>
+  <main>
+    <section>
+      <form action="/url/api/shorturl" method="POST">
+        <fieldset>
+          <legend>Encurtador de URL</legend>
+          <label for="url_input">digite a URL:</label>
+          <input id="url_input" type="text" name="url" placeholder="https://github.com/davi38/" />
+          <input type="submit" value="Encurtar URL" />
+        </fieldset>
+      </form>
+    </section>
+  </main>
+  <footer>
+    <p>Meu <a href="https://www.linkedin.com/in/davialvesoliveira/">Linkedin</a></p>
+  </footer>
+</body>
+
 </html>
