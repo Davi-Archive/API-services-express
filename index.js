@@ -345,6 +345,9 @@ app.post("/file/api/fileanalyse", multer().single('upfile'), (req, res)=> {
   })
 })
 
+app.get("/file/", (req, res)=>{
+  res.sendFile(__dirname + 'file/views/index.html');
+})
 //Upload de arquivo - /file/api/fileanalyse
 //------------------------------------------------
 
