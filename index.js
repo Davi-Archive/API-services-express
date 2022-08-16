@@ -2,6 +2,7 @@
 // where your node app starts
 
 // init project
+let multer = require('multer') // file parser middleware
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
@@ -24,6 +25,7 @@ app.listen(PORT, () => {
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
 // so that your API is remotely testable by FCC
 var cors = require('cors');
+const { response } = require('express');
 app.use(cors({ optionsSuccessStatus: 200 }));  // some legacy browsers choke on 204
 
 // http://expressjs.com/en/starter/static-files.html
@@ -332,11 +334,16 @@ app.get('/tracker/api/users', (req, res) => {
 //------------------------------------------------
 
 //Upload de arquivo - /file/api/fileanalyse
+//multer({dest: './public/uploads/'}) saves to folder /public/uploads/
 
-app.post("/file/api/fileanalyse", function (req, res) {
-  res.json({
-    "upload": "FILE"
-  })
+app.post("/file/api/fileanalyse", multer().single('upfile'), (req, res)=> {
+  let responseObject = {}
+    responseObject['name'] = req.file.originalname;
+    responseObject['type'] = req.file.mimetype;
+    responseObject['size'] = req.file.size;
+
+  console.log(req.file)
+  res.json({responseObject})
 })
 
 //Upload de arquivo - /file/api/fileanalyse

@@ -44,12 +44,29 @@ body {
 }
 
 .exer-tracker{
-	grid-column: 1;
+	grid-column: 1 / span 2;
 	grid-row: 3;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+.create-user{
+	border: 3px solid black;
+	display:flex;
+	align-items: center;
+	justify-content: center;
+}
+.exercises-add{
+	border: 3px solid black;
+}
+
+.title-exer{
+	grid-column: 1 / span 2;
+	border: 10px solid black;
 }
 
 .file-meta{
-	grid-column: 2;
+	grid-column: 3;
 	grid-row: 3;
 }
 
