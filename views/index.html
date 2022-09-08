@@ -74,6 +74,7 @@
     .title-exer {
       grid-column: 1 / span 2;
       border: 10px solid black;
+      border-radius: 20px;
     }
 
     .file-meta {
@@ -139,27 +140,27 @@
 
     <!--card 2-->
     <div class="whoami container">
-      <h2>Request Header Parser Microservice</h2>
+      <h2>Dados da Requisição</h2>
 
-      <h3>Example Usage:</h3>
+      <h3>Exemplo de URL:</h3>
       <p>
         <a href="dados/api/whoami">[base url]/dados/api/whoami</a>
       </p>
 
-      <h3>Example Output:</h3>
+      <h3>Resposta Esperada:</h3>
       <p>
-        <code>{"ipaddress":"::ffff:159.20.14.100","language":"en-US,en;q=0.5",<br>"software":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0"}</code>
+        <code>{"ipaddress":"::ffff:127.0.0.1","language":"en-US,en;q=0.5",<br>"software":"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0"}</code>
       </p>
     </div>
     <!--card 2 END-->
 
     <!--card 3-->
     <div class="url-short container">
-      <h1>URL Shortener Microservice</h1>
+      <h1>Encurtador de URL</h1>
       <section>
         <form action="url/api/shorturl" method="POST">
           <fieldset>
-            <legend>URL Shortener</legend>
+            <legend>URL para encurtar</legend>
             <label for="url_input">URL:</label>
             <input id="url_input" type="text" name="url" placeholder="https://www.google.com/" />
             <input type="submit" value="POST URL" />
@@ -172,32 +173,34 @@
     <!--card 4-->
     <div class="exer-tracker container">
       <div class="title-exer">
-        <h1>Exercise tracker</h1>
+        <h1>Anotador</h1>
       </div>
       <div class="create-user">
         <form action="tracker/api/users" method="post">
-          <h3>Create a New User</h3>
+          <h3>Crie um usuário</h3>
           <p><code>POST /api/users</code></p>
-          <input id="uname" type="text" name="username" placeholder="username" />
-          <input type="submit" value="Submit" />
+          <input id="uname" type="text" name="username" placeholder="Ex: Davi" />
+          <input type="submit" value="Enviar" />
+          <p>Salve o ID do usuário para consulta da anotação.</p>
         </form>
+
       </div>
       <div class="exercises-add">
         <form id="exercise-form" method="post">
-          <h3>Add exercises</h3>
+          <h3>Adicionar execícios</h3>
           <p><code>POST /api/users/:_id/exercises</code></p>
           <input id="uid" type="text" name=":_id" placeholder=":_id" /><br />
-          <input id="desc" type="text" name="description" placeholder="description*" /><br />
-          <input id="dur" type="text" name="duration" placeholder="duration* (mins.)" /><br />
-          <input id="date" type="text" name="date" placeholder="date (yyyy-mm-dd)" /><br />
-          <input type="submit" value="Submit" />
+          <input id="desc" type="text" name="description" placeholder="descrição*" /><br />
+          <input id="dur" type="text" name="duration" placeholder="duração* (mins.)" /><br />
+          <input id="date" type="text" name="date" placeholder="data (yyyy-mm-dd)" /><br />
+          <input type="submit" value="Enviar" />
         </form>
         <p>
-          <strong>GET user's exercise log: </strong>
-          <code>GET /api/users/:_id/logs?[from][&amp;to][&amp;limit]</code>
+          <strong>GET anotações do usuário: </strong>
+          <p><code>GET /api/users/:_id/logs?[Data Inicial][&amp;Data Final][&amp;Limite]</code></p>
         </p>
-        <p><strong>[ ]</strong> = optional</p>
-        <p><strong>from, to</strong> = dates (yyyy-mm-dd); <strong>limit</strong> = number</p>
+        <p><strong>[ ]</strong> = opcional</p>
+        <p><strong>Data Inicial, Data Final</strong> = data (yyyy-mm-dd); <strong>Limite</strong> = número</p>
       </div>
     </div>
     <script>
@@ -214,11 +217,11 @@
 
     <!--card 5-->
     <div class="file-meta container">
-      <h2>API Project: File Metadata Microservice</h2>
+      <h2>Serviço de Upload de Arquivos</h2>
 
-      <h3>Usage:</h3>
+      <h3>Upload:</h3>
       <p>
-        Please Upload a File ...
+        Selecione um arquivo para upload.
       </p>
       <div class="view">
         <h4 id="output"></h4>

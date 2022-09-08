@@ -9,9 +9,6 @@ app.use(bodyParser.json()); //link em json
 app.use(express.static('public'));
 
 const { response } = require('express');
-const { HostAddress } = require('mongodb');
-
-
 
 // mongo connect
 mongoose.connect(process.env.DB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
