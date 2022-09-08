@@ -1,7 +1,7 @@
 {
-  "name": "fcc-api-projects-boilerplate",
+  "name": "api-projects",
   "version": "0.0.1",
-  "description": "An FCC Backend Challenge",
+  "description": "Uma API com diversas funcionalidades",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -20,17 +20,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/freeCodeCamp/boilerplate-project-timestamp.git"
+    "url": "git+https://github.com/davi38/api-portfolio"
   },
-  "bugs": {
-    "url": "https://github.com/freeCodeCamp/freeCodeCamp/issues"
-  },
-  "homepage": "https://github.com/freeCodeCamp/boilerplate-project-timestamp#readme",
-  "author": "freeCodeCamp <team@freecodecamp.org>",
+  "homepage": "https://api-portfolio-six.vercel.app/",
+  "author": "Davi",
   "keywords": [
     "node",
-    "express",
-    "freeCodeCamp"
+    "express"
   ],
   "license": "MIT",
   "devDependencies": {
