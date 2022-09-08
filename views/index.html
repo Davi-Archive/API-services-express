@@ -6,7 +6,114 @@
   <title>Portfólio API</title>
   <link rel="shortcut icon" href="robot.ico" type="image/x-icon" />
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-  <link href="http://raw.githack.com/davi38/api-portfolio/main/public/style.css" rel="stylesheet" type="text/css">
+  <link href="/public/style.css" rel="stylesheet" type="text/css">
+  <style>
+    /****** Main Styling ******/
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      font-size: 1rem;
+      color: #222;
+      background-color: #FaFaFa;
+      text-align: center;
+      line-height: 1.3em;
+      height: 100vh;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 10% 1fr 1fr 10%;
+      grid-gap: 5px;
+    }
+
+    .titulo-pagina {
+      grid-column: 1 / span 3;
+      grid-row: 1;
+    }
+
+
+    .container {
+      padding: 0;
+      border: 3px solid black;
+    }
+
+    .data-hora {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .whoami {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    .url-short {
+      grid-column: 3;
+      grid-row: 2;
+    }
+
+    .exer-tracker {
+      grid-column: 1 / span 2;
+      grid-row: 3;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .create-user {
+      border: 3px solid black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .exercises-add {
+      border: 3px solid black;
+    }
+
+    .title-exer {
+      grid-column: 1 / span 2;
+      border: 10px solid black;
+    }
+
+    .file-meta {
+      grid-column: 3;
+      grid-row: 3;
+    }
+
+    h3 {
+      margin-top: 30px;
+    }
+
+    hr {
+      margin: 25px;
+    }
+
+    .footer {
+      grid-column: 1 / span 3;
+      grid-row: 5;
+      margin-top: 40px;
+    }
+
+    code {
+      font-family: monospace;
+      padding: 2px;
+      color: black;
+      background-color: #fff;
+    }
+
+    ul {
+      list-style-type: none;
+    }
+
+    li {
+      margin-bottom: 0.5em;
+    }
+
+    a {
+      color: #2574A9;
+    }
+  </style>
 </head>
 
 <body>
