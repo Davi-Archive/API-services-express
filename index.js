@@ -365,3 +365,6 @@ app.get("/file/", (req, res) => {
 var listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 }); */
+
+// Export the Express API
+module.exports = app;
